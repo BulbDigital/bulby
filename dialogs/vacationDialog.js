@@ -139,6 +139,7 @@ class VacationDialog extends CancelAndHelpDialog {
      * Complete the interaction and end the dialog.
      */
     async finalStep(stepContext) {
+        console.log(stepContext);
         if (stepContext.result === true || stepContext.result.toLowerCase() === "yes") {
             const vacationDetails = stepContext.options;
 
