@@ -98,23 +98,26 @@ class VacationDialog extends CancelAndHelpDialog {
         }
 
         let tmp = {        
+            "text": msg,
             "channelData": {
                 "text": msg,
             "attachments": [
                 {
-                    // "title": "Choose a game to play",
+                    "title": "Choose a game to play",
                     "fallback": "You are unable to confirm your vacation request",
                     "callback_id": "bd_vacation_request",
                     "color": "#F7D032",
                     "attachment_type": "default",
                     "actions": [
                         {
+                            "name": "confirm",
                             "text": "Yes",
                             "type": "button",
                             "value": "yes",
                             "style": "primary"
                         },
                         {
+                            "name": "confirm",
                             "text": "No",
                             "style": "danger",
                             "type": "button",
