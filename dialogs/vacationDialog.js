@@ -101,7 +101,7 @@ class VacationDialog extends CancelAndHelpDialog {
             "text": msg,
             "attachments": [
                 {
-                    "text": "Choose a game to play",
+                    "title": "Choose a game to play",
                     "fallback": "You are unable to choose a game",
                     "callback_id": "wopr_game",
                     "color": "#3AA3E3",
