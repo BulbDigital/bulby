@@ -6,6 +6,8 @@ const { ConfirmPrompt, TextPrompt, WaterfallDialog } = require('botbuilder-dialo
 const { CancelAndHelpDialog } = require('./cancelAndHelpDialog');
 const { DateResolverDialog } = require('./dateResolverDialog');
 
+const axios = require('axios');
+
 const CONFIRM_PROMPT = 'confirmPrompt';
 const START_DATE_RESOLVER_DIALOG = 'startDateResolverDialog';
 const END_DATE_RESOLVER_DIALOG = 'endDateResolverDialog';
@@ -97,36 +99,36 @@ class VacationDialog extends CancelAndHelpDialog {
             msg = `Please confirm, I have you requesting vacation from: ${vacationDetails.startDate} to: ${vacationDetails.endDate}.`;
         }
 
-        let slackMessage = {        
+        let slackMessage = {
             "text": "",
             "channelData": {
                 "text": "",
-            "attachments": [
-                {
-                    "title": msg,
-                    "fallback": "You are unable to confirm your vacation request",
-                    "callback_id": "bd_vacation_request",
-                    "color": "#F7D032",
-                    "attachment_type": "default",
-                    "actions": [
-                        {
-                            "name": "confirm",
-                            "text": "Yes",
-                            "type": "button",
-                            "value": "yes",
-                            "style": "primary"
-                        },
-                        {
-                            "name": "confirm",
-                            "text": "No",
-                            "style": "danger",
-                            "type": "button",
-                            "value": "no"
-                        }
-                    ]
-                }
-            ],
-             }
+                "attachments": [
+                    {
+                        "title": msg,
+                        "fallback": "You are unable to confirm your vacation request",
+                        "callback_id": "bd_vacation_request",
+                        "color": "#F7D032",
+                        "attachment_type": "default",
+                        "actions": [
+                            {
+                                "name": "confirm",
+                                "text": "Yes",
+                                "type": "button",
+                                "value": "yes",
+                                "style": "primary"
+                            },
+                            {
+                                "name": "confirm",
+                                "text": "No",
+                                "style": "danger",
+                                "type": "button",
+                                "value": "no"
+                            }
+                        ]
+                    }
+                ],
+            }
         };
 
         // return await stepContext.context.sendActivity(tmp);
@@ -142,8 +144,19 @@ class VacationDialog extends CancelAndHelpDialog {
         console.log(stepContext);
         console.log("*******************************************************************");
         console.log(stepContext.context._activity);
-        if(stepContext.context._activity.channelData){
+        if (stepContext.context._activity.channelData) {
             console.log(stepContext.context._activity.channelData);
+            let payload = stepContext.context._activity.channelData.Payload;
+            let url = payload.response_url;
+            console.log("url = " + url);
+
+            axios.post(url, {text: "Selected", replace_original: true})
+                .then(response => {
+                    console.log(response);
+                })
+                .catch(error => {
+                    console.log(error);
+                });
         }
         if (stepContext.result === true || stepContext.result.toLowerCase() === "yes") {
             const vacationDetails = stepContext.options;
