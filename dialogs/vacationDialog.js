@@ -67,22 +67,6 @@ class VacationDialog extends CancelAndHelpDialog {
     }
 
     /**
-     * If a travel date has not been provided, prompt for one.
-     * This will use the DATE_RESOLVER_DIALOG.
-     */
-    async travelDateStep(stepContext) {
-        const bookingDetails = stepContext.options;
-
-        // Capture the results of the previous step
-        bookingDetails.origin = stepContext.result;
-        if (!bookingDetails.travelDate || this.isAmbiguous(bookingDetails.travelDate)) {
-            return await stepContext.beginDialog(DATE_RESOLVER_DIALOG, { date: bookingDetails.travelDate });
-        } else {
-            return await stepContext.next(bookingDetails.travelDate);
-        }
-    }
-
-    /**
      * Confirm the information the user has provided.
      */
     async confirmStep(stepContext) {
@@ -190,7 +174,10 @@ class VacationDialog extends CancelAndHelpDialog {
 
             return await stepContext.endDialog(vacationDetails);
         } else {
-            return await stepContext.endDialog();
+            const vacationDetails = stepContext.options;
+            vacationDetails.startDate = null;
+            vacationDetails.endDate = null;
+            return await stepContext.replaceDialog('vacationDialog');
         }
     }
 
