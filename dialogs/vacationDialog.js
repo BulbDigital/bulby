@@ -155,10 +155,12 @@ class VacationDialog extends CancelAndHelpDialog {
 
             payload.actions.forEach(action => {
                 if(action.value === 'yes'){
-                    slackPost.text = "✅ Send me away";
+                    slackPost.text = "Send me away";
+                    slackPost.icon_emoji = ":white_check_mark:";
                 }
                 else{
-                    slackPost.text = "❌ Oops wrong date"
+                    slackPost.text = "Oops wrong date";
+                    slackPost.icon_emoji = ":x:";
                 }
             });
 
