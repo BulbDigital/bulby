@@ -141,26 +141,24 @@ class VacationDialog extends CancelAndHelpDialog {
      * Complete the interaction and end the dialog.
      */
     async finalStep(stepContext) {
-        console.log(stepContext);
-        console.log("*******************************************************************");
-        console.log(stepContext.context._activity);
+        // console.log(stepContext);
+        // console.log("*******************************************************************");
+        // console.log(stepContext.context._activity);
         if (stepContext.context._activity.channelData) {
-            console.log(stepContext.context._activity.channelData);
+            // console.log(stepContext.context._activity.channelData);
             let payload = stepContext.context._activity.channelData.Payload;
-            console.log("actions");
-            console.log(payload.actions);
+            // console.log("actions");
+            // console.log(payload.actions);
             let url = payload.response_url;
 
-            let slackPost = {text: "Selected", replace_original: true};
+            let slackPost = {text: "Selected", replace_original: false};
 
             payload.actions.forEach(action => {
                 if(action.value === 'yes'){
-                    slackPost.text = "Send me away";
-                    slackPost.icon_emoji = ":white_check_mark:";
+                    slackPost.text = ":white_check_mark: Send me away";
                 }
                 else{
-                    slackPost.text = "Oops wrong date";
-                    slackPost.icon_emoji = ":x:";
+                    slackPost.text = ":x: Oops wrong date";
                 }
             });
 
