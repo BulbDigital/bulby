@@ -151,16 +151,27 @@ class VacationDialog extends CancelAndHelpDialog {
             // console.log(payload.actions);
             let url = payload.response_url;
 
-            let slackPost = {text: "Selected", replace_original: false};
-
+            let postText = "";
             payload.actions.forEach(action => {
                 if(action.value === 'yes'){
-                    slackPost.text = ":white_check_mark: Send me away";
+                    postText = ":white_check_mark: Send me away";
                 }
                 else{
-                    slackPost.text = ":x: Oops wrong date";
+                    postText = ":x: Oops wrong date";
                 }
             });
+
+            let slackPost = {"attachments": [
+                {
+                    "title": postText,
+                    "fallback": "Request confirmed",
+                    "callback_id": "bd_vacation_request_confirmed",
+                    "color": "#F7D032",
+                    "attachment_type": "default"
+                }
+            ], replace_original: true};
+
+            
 
             axios.post(url, slackPost)
                 .then(response => {
