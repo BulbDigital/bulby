@@ -151,7 +151,18 @@ class VacationDialog extends CancelAndHelpDialog {
             console.log(payload.actions);
             let url = payload.response_url;
 
-            axios.post(url, {text: "Selected", replace_original: true})
+            let slackPost = {text: "Selected", replace_original: true};
+
+            payload.actions.forEach(action => {
+                if(action.value === 'yes'){
+                    slackPost.text = "✅ Send me away";
+                }
+                else{
+                    slackPost.text = "❌ Oops wrong date"
+                }
+            });
+
+            axios.post(url, slackPost)
                 .then(response => {
                     console.log(response);
                 })
