@@ -147,8 +147,9 @@ class VacationDialog extends CancelAndHelpDialog {
         if (stepContext.context._activity.channelData) {
             console.log(stepContext.context._activity.channelData);
             let payload = stepContext.context._activity.channelData.Payload;
+            console.log("actions");
+            console.log(payload.actions);
             let url = payload.response_url;
-            console.log("url = " + url);
 
             axios.post(url, {text: "Selected", replace_original: true})
                 .then(response => {
