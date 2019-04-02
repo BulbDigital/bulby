@@ -42,12 +42,12 @@ class VacationDialog extends CancelAndHelpDialog {
             return await stepContext.beginDialog(START_DATE_RESOLVER_DIALOG, { date: vacationDetails.vacationDate });
         } else if (vacationDetails.vacationDate.type === 'date') {
             vacationDetails.startDate = vacationDetails.vacationDate.value;
-            return await stepContext.next(vacationDetails);
+            return await stepContext.next(vacationDetails.startDate);
         }
         else if (vacationDetails.vacationDate.type === 'daterange') {
             vacationDetails.startDate = vacationDetails.vacationDate.start;
             vacationDetails.endDate = vacationDetails.vacationDate.end;
-            return await stepContext.next(vacationDetails);
+            return await stepContext.next(vacationDetails.startDate);
         }
     }
 
@@ -58,7 +58,7 @@ class VacationDialog extends CancelAndHelpDialog {
         const vacationDetails = stepContext.options;
 
         // Capture the response to the previous step's prompt
-        // vacationDetails.startDate = stepContext.result;
+        vacationDetails.startDate = stepContext.result;
         if (!vacationDetails.endDate) {
             return await stepContext.beginDialog(END_DATE_RESOLVER_DIALOG, { date: vacationDetails.endDate });
         } else {
@@ -149,37 +149,41 @@ class VacationDialog extends CancelAndHelpDialog {
             let payload = stepContext.context._activity.channelData.Payload;
             // console.log("actions");
             // console.log(payload.actions);
-            let url = payload.response_url;
+            if (payload) {
+                let url = payload.response_url;
 
-            let postText = "";
-            payload.actions.forEach(action => {
-                if(action.value === 'yes'){
-                    postText = ":white_check_mark: Send me away";
-                }
-                else{
-                    postText = ":x: Oops wrong date";
-                }
-            });
-
-            let slackPost = {"attachments": [
-                {
-                    "title": postText,
-                    "fallback": "Request confirmed",
-                    "callback_id": "bd_vacation_request_confirmed",
-                    "color": "#F7D032",
-                    "attachment_type": "default"
-                }
-            ], replace_original: true};
-
-            
-
-            axios.post(url, slackPost)
-                .then(response => {
-                    console.log(response);
-                })
-                .catch(error => {
-                    console.log(error);
+                let postText = "";
+                payload.actions.forEach(action => {
+                    if (action.value === 'yes') {
+                        postText = ":white_check_mark: Send me away";
+                    }
+                    else {
+                        postText = ":x: Oops wrong date";
+                    }
                 });
+
+                let slackPost = {
+                    "attachments": [
+                        {
+                            "title": postText,
+                            "fallback": "Request confirmed",
+                            "callback_id": "bd_vacation_request_confirmed",
+                            "color": "#F7D032",
+                            "attachment_type": "default"
+                        }
+                    ], replace_original: true
+                };
+
+
+
+                axios.post(url, slackPost)
+                    .then(response => {
+                        console.log(response);
+                    })
+                    .catch(error => {
+                        console.log(error);
+                    });
+            }
         }
         if (stepContext.result === true || stepContext.result.toLowerCase() === "yes") {
             const vacationDetails = stepContext.options;
