@@ -1,7 +1,6 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
-const { MessageFactory } = require('botbuilder');
 const { TimexProperty } = require('@microsoft/recognizers-text-data-types-timex-expression');
 const { ConfirmPrompt, TextPrompt, WaterfallDialog } = require('botbuilder-dialogs');
 const { CancelAndHelpDialog } = require('./cancelAndHelpDialog');
@@ -98,7 +97,7 @@ class VacationDialog extends CancelAndHelpDialog {
             msg = `Please confirm, I have you requesting vacation from: ${vacationDetails.startDate} to: ${vacationDetails.endDate}.`;
         }
 
-        let tmp = {        
+        let slackMessage = {        
             "text": "",
             "channelData": {
                 "text": "",
@@ -130,13 +129,10 @@ class VacationDialog extends CancelAndHelpDialog {
              }
         };
 
-        var reply = MessageFactory.suggestedActions(['Yes', 'No'], `Please confirm, I have you requesting vacation from: ${vacationDetails.startDate} to: ${vacationDetails.endDate}.`);
-        return await stepContext.context.sendActivity(reply);
-
         // return await stepContext.context.sendActivity(tmp);
 
         // Offer a YES/NO prompt.
-        return await stepContext.prompt(TEXT_PROMPT, { prompt: tmp });
+        return await stepContext.prompt(TEXT_PROMPT, { prompt: slackMessage });
     }
 
     /**
