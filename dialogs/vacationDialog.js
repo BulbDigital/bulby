@@ -126,10 +126,10 @@ class VacationDialog extends CancelAndHelpDialog {
      */
     async finalStep(stepContext) {
         // console.log(stepContext);
-        // console.log("*******************************************************************");
+        console.log("*******************************************************************");
         // console.log(stepContext.context._activity);
         if (stepContext.context._activity.channelData) {
-            // console.log(stepContext.context._activity.channelData);
+            console.log(stepContext.context._activity.channelData);
             let payload = stepContext.context._activity.channelData.Payload;
             // console.log("actions");
             // console.log(payload.actions);
@@ -171,7 +171,7 @@ class VacationDialog extends CancelAndHelpDialog {
         }
         if (stepContext.result === true || stepContext.result.toLowerCase() === "yes") {
             const vacationDetails = stepContext.options;
-
+            // axios.post("", {startDate})
             return await stepContext.endDialog(vacationDetails);
         } else {
             const vacationDetails = stepContext.options;
