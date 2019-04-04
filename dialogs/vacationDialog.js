@@ -126,14 +126,19 @@ class VacationDialog extends CancelAndHelpDialog {
      */
     async finalStep(stepContext) {
         // console.log(stepContext);
+        let userId = "";
         console.log("*******************************************************************");
         // console.log(stepContext.context._activity);
         if (stepContext.context._activity.channelData) {
-            console.log(stepContext.context._activity.channelData);
+            if(stepContext.context._activity.channelId === "emulator"){
+                userId = process.env.SlackUserId;
+            }
+            // console.log(stepContext.context._activity.channelData);
             let payload = stepContext.context._activity.channelData.Payload;
             // console.log("actions");
             // console.log(payload.actions);
-            if (payload) {
+            if (stepContext.context._activity.channelId === "slack") {
+                userId = payload.user.id;
                 let url = payload.response_url;
 
                 let postText = "";
@@ -172,6 +177,24 @@ class VacationDialog extends CancelAndHelpDialog {
         if (stepContext.result === true || stepContext.result.toLowerCase() === "yes") {
             const vacationDetails = stepContext.options;
             // axios.post("", {startDate})
+            let userGetParams = { token: process.env.SlackOAuthToken, user: userId, pretty: true};
+            console.log(userGetParams);
+            axios.get("https://slack.com/api/users.info", {params:userGetParams}).then(res =>{
+                //create approval
+                console.log("got user");
+                console.log(res);
+
+                if(res.data.ok){
+                    let email = res.data.user.profile.email;
+                    let approvalPost = { "user": email, "startDate": stepContext.options.startDate, "endDate": stepContext.options.endDate }
+                    axios.post(process.env.VacationApprovalFlowUrl, approvalPost).then(flowRes =>{
+                        console.log(flowRes);
+                    });
+                }
+            })
+            .catch(err =>{
+                console.log(err);
+            })
             return await stepContext.endDialog(vacationDetails);
         } else {
             const vacationDetails = stepContext.options;
