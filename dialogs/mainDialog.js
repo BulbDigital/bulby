@@ -121,10 +121,16 @@ class MainDialog extends ComponentDialog {
         : "I'm not sure what the guest wifi password is.";
       await stepContext.context.sendActivity(guestWifiPw);
       return await stepContext.endDialog();
+    } else if (details.intent === "Wifi_Password") {
+      let wifiPw = process.env.WifiPassword
+        ? `The wifi password is ${process.env.WifiPassword}`
+        : "I'm not sure what the wifi password is.";
+      await stepContext.context.sendActivity(wifiPw);
+      return await stepContext.endDialog();
     }
 
     await stepContext.context.sendActivity(
-      'What can I help you with today?\nSay something like "Request vacation from March 22 to March 26"'
+      'What can I help you with today?\nSay something like "Request vacation from March 22 to March 26" or "What is the wifi password?"'
     );
     return await stepContext.endDialog();
   }
